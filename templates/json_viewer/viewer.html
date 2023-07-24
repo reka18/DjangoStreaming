@@ -1,0 +1,109 @@
+<!-- json_viewer/templates/json_viewer/json_viewer.html -->
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Activity Feed</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .box {
+            border: 1px solid #ccc;
+            padding: 10px;
+            margin-bottom: 10px;
+        }
+
+        .title {
+            font-weight: bold;
+            margin-bottom: 5px;
+            color: #0088cc;
+        }
+
+        .item {
+            display: none; /* Hide the additional information by default */
+            margin-left: 20px;
+            color: #444;
+        }
+
+        .show-button {
+            margin-top: 5px;
+            background-color: #0088cc;
+            color: #fff;
+            border: none;
+            padding: 5px 10px;
+            cursor: pointer;
+            border-radius: 3px;
+        }
+
+        .show-button:hover {
+            background-color: #0077b3;
+        }
+
+        .no-events-message {
+            text-align: center;
+            color: #666;
+            font-style: italic;
+        }
+    </style>
+    <meta http-equiv="refresh" content="2">
+</head>
+<body>
+    <div class="container">
+        <h1>Activity Feed</h1>
+        {% if items %}
+            {% for item in items %}
+            <div class="box">
+                <div class="title">Title: {{ item.title }}</div>
+                <button class="show-button" onclick="toggleVisibility(this, {{ forloop.counter0 }})">Show Details</button>
+                <div class="item" id="item-{{ forloop.counter0 }}" style="display: none;">
+                    <div>ID: {{ item.id }}</div>
+                    <div>URL: {{ item.url }}</div>
+                    <div>Verb: {{ item.verb }}</div>
+                    <div>Published: {{ item.published }}</div>
+                    <div>Actor ID: {{ item.actor.id }}</div>
+                    <div>Actor URL: {{ item.actor.url }}</div>
+                    <div>Actor Type: {{ item.actor.objectType }}</div>
+                    <div>Actor Name: {{ item.actor.displayName }}</div>
+                    <div>Target ID: {{ item.target.id }}</div>
+                    <div>Target URL: {{ item.target.url }}</div>
+                    <div>Target Type: {{ item.target.objectType }}</div>
+                    <div>Target Name: {{ item.target.displayName }}</div>
+                </div>
+            </div>
+            {% endfor %}
+        {% else %}
+            <div class="no-events-message">No events recorded yet.</div>
+        {% endif %}
+    </div>
+
+    <script>
+        function toggleVisibility(button, index) {
+            var itemDiv = document.getElementById('item-' + index);
+            var currentDisplay = itemDiv.style.display;
+            itemDiv.style.display = currentDisplay === 'none' ? 'block' : 'none';
+
+            // Store the state of visibility in local storage
+            localStorage.setItem('item-' + index, itemDiv.style.display);
+        }
+
+        // Restore visibility states from local storage on page load
+        document.addEventListener('DOMContentLoaded', function () {
+            for (var i = 0; i < {{ items|length }}; i++) {
+                var itemDiv = document.getElementById('item-' + i);
+                var storedDisplay = localStorage.getItem('item-' + i);
+                if (storedDisplay === 'block') {
+                    itemDiv.style.display = 'block';
+                }
+            }
+        });
+    </script>
+</body>
+</html>

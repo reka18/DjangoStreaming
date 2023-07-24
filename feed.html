@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Local Endpoint Query</title>
+</head>
+<body>
+    <h1>Local Endpoint Query</h1>
+    <button onclick="queryEndpoint()">Query Endpoint</button>
+    <pre id="response"></pre>
+
+    <script>
+        function queryEndpoint() {
+            const endpointUrl = 'http://127.0.0.1:8000/activity/feed/json/'; // Replace this with your local endpoint URL
+
+            // Make the XMLHttpRequest to the local endpoint
+            const xhr = new XMLHttpRequest();
+            xhr.open('GET', endpointUrl, true);
+
+            // Set CORS, Cookie, and Content-Type headers
+            xhr.setRequestHeader('Content-Type', 'application/json');
+            xhr.setRequestHeader('Cookie', 'csrftoken=uH8Q1tPuPm3VFjIQN6btyBSfAYRrYcom; sessionid=94b9y8r9xm1m5faegd19ooujrenq60xa');
+            xhr.withCredentials = true;
+
+            // Handle the response
+            xhr.onload = function () {
+                if (xhr.status >= 200 && xhr.status < 300) {
+                    const responseJson = JSON.parse(xhr.responseText);
+                    document.getElementById('response').textContent = JSON.stringify(responseJson, null, 2);
+                } else {
+                    document.getElementById('response').textContent = 'Error: ' + xhr.statusText;
+                }
+            };
+
+            // Handle any network errors
+            xhr.onerror = function () {
+                document.getElementById('response').textContent = 'Network Error';
+            };
+
+            // Send the request
+            xhr.send();
+        }
+    </script>
+</body>
+</html>
